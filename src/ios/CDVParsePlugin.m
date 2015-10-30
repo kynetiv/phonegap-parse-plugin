@@ -160,8 +160,13 @@ static NSString * const PPHash = @"push_hash";
 {
     CDVPluginResult* pluginResult = nil;
     PFInstallation *installation = [PFInstallation currentInstallation];
-    installation[@"user"] = [PFUser currentUser];
-    [installation saveInBackground];
+     PFUser *currentUser = [PFUser currentUser];
+    if ( currentUser ) {
+        installation[@"user"] = currentUser;
+        [installation saveInBackground];
+    } else {
+        // becomeInBackground wasn't complete, will need to set installation user another time
+    }
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
